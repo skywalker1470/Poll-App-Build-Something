@@ -5,7 +5,7 @@ it, see live results, close it. Built to refresh cloud provisioning and
 deployment concepts: Docker, Docker Compose, and Kubernetes.
 
 Full writeup (software description, architecture design, discussion of
-benefits, challenges, and security): [docs/deliverables.tex](docs/cloud.pdf)
+benefits, challenges, and security): [docs/deliverables.pdf](docs/cloud.pdf)
 
 ## Architecture
 
