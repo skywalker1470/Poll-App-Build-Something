@@ -1,0 +1,20 @@
+\section{Software Description}
+
+Poll App is a microservice-based application for polls and voting. A poll is a question with multiple options. The users can vote for one of the options in a poll, once per poll, per user. Once there are enough votes, any user can access live statistics, and the poll can be closed to prevent further voting.
+
+The application has been purposely designed to be simple in its domain logic since the purpose of this assignment is to teach how to design microservices, which communicate with each other, as well as how to deploy them with Kubernetes. The key thing here is that the application has to be decomposed into independent microservices which communicate only via REST and can be scaled independently from each other.
+
+The application consists of four microservices, all written in Node.js
+with the Express framework, and one MongoDB database as in the course material:
+
+\begin{itemize}
+    \item \textbf{poll-service}: creates, lists, retrieves, and closes polls.
+    \item \textbf{vote-service}: records votes against a poll, enforcing one
+        vote per voter per poll.
+    \item \textbf{results-service}: computes a live tally of votes for a
+        given poll. Holds no state of its own.
+    \item \textbf{notification-service}: records a notification whenever a
+        poll is closed.
+\end{itemize}
+
+REST APIs are used by all the four services to communicate between themselves as well as to the outside world using just plain HTTP. Code sharing does not exist between any of the four services. Every service is a separate Docker container that can be started, stopped, and scaled independently of the others.

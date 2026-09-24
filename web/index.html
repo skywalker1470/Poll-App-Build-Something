@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Poll App</title>
+</head>
+<body>
+
+  <h1>Poll App</h1>
+  <p>A small frontend that talks directly to poll-service, vote-service, and results-service over their REST APIs. No build step, no framework, just plain HTML and JavaScript.</p>
+
+  <hr>
+
+  <h2>Service addresses</h2>
+  <p>Change these if your services are not on localhost (for example, after running kubectl port-forward on different ports).</p>
+  <label>poll-service: <input type="text" id="pollUrl" value="http://localhost:3000"></label><br>
+  <label>vote-service: <input type="text" id="voteUrl" value="http://localhost:3001"></label><br>
+  <label>results-service: <input type="text" id="resultsUrl" value="http://localhost:3002"></label>
+
+  <hr>
+
+  <h2>1. Create a poll</h2>
+  <label>Question: <input type="text" id="question" value="Best language?"></label><br>
+  <label>Options (comma separated): <input type="text" id="options" value="JS,Python,Go"></label><br>
+  <button onclick="createPoll()">Create poll</button>
+  <pre id="createOutput"></pre>
+
+  <hr>
+
+  <h2>2. List all polls</h2>
+  <button onclick="listPolls()">Refresh poll list</button>
+  <pre id="listOutput"></pre>
+
+  <hr>
+
+  <h2>3. Vote</h2>
+  <label>Poll ID: <input type="text" id="votePollId"></label><br>
+  <label>Option: <input type="text" id="voteOption"></label><br>
+  <label>Voter name: <input type="text" id="voterId" value="alice"></label><br>
+  <button onclick="castVote()">Cast vote</button>
+  <pre id="voteOutput"></pre>
+
+  <hr>
+
+  <h2>4. Results</h2>
+  <label>Poll ID: <input type="text" id="resultsPollId"></label><br>
+  <button onclick="getResults()">Get results</button>
+  <pre id="resultsOutput"></pre>
+
+  <hr>
+
+  <h2>5. Close a poll</h2>
+  <label>Poll ID: <input type="text" id="closePollId"></label><br>
+  <button onclick="closePoll()">Close poll</button>
+  <pre id="closeOutput"></pre>
+
+  <script>
+    function pollUrl() { return document.getElementById('pollUrl').value; }
+    function voteUrl() { return document.getElementById('voteUrl').value; }
+    function resultsUrl() { return document.getElementById('resultsUrl').value; }
+
+    async function createPoll() {
+      const question = document.getElementById('question').value;
+      const options = document.getElementById('options').value.split(',').map(o => o.trim());
+      const res = await fetch(pollUrl() + '/polls', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question, options })
+      });
+      const data = await res.json();
+      document.getElementById('createOutput').textContent = JSON.stringify(data, null, 2);
+      if (data.id) {
+        document.getElementById('votePollId').value = data.id;
+        document.getElementById('resultsPollId').value = data.id;
+        document.getElementById('closePollId').value = data.id;
+      }
+    }
+
+    async function listPolls() {
+      const res = await fetch(pollUrl() + '/polls');
+      const data = await res.json();
+      document.getElementById('listOutput').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function castVote() {
+      const pollId = document.getElementById('votePollId').value;
+      const option = document.getElementById('voteOption').value;
+      const voterId = document.getElementById('voterId').value;
+      const res = await fetch(voteUrl() + '/votes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pollId, option, voterId })
+      });
+      const data = await res.json();
+      document.getElementById('voteOutput').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function getResults() {
+      const pollId = document.getElementById('resultsPollId').value;
+      const res = await fetch(resultsUrl() + '/results/' + pollId);
+      const data = await res.json();
+      document.getElementById('resultsOutput').textContent = JSON.stringify(data, null, 2);
+    }
+
+    async function closePoll() {
+      const pollId = document.getElementById('closePollId').value;
+      const res = await fetch(pollUrl() + '/polls/' + pollId + '/close', { method: 'POST' });
+      const data = await res.json();
+      document.getElementById('closeOutput').textContent = JSON.stringify(data, null, 2);
+    }
+  </script>
+
+</body>
+</html>

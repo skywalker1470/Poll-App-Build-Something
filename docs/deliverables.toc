@@ -1,0 +1,11 @@
+\contentsline {section}{\numberline {1}Software Description}{2}{section.1}%
+\contentsline {section}{\numberline {2}Software Architecture Design}{3}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Component Overview}{3}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Interaction Diagram}{3}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Component to Microservice Mapping}{3}{subsection.2.3}%
+\contentsline {subsection}{\numberline {2.4}Cloud Architecture Patterns Applied}{3}{subsection.2.4}%
+\contentsline {section}{\numberline {3}Discussion: Benefits, Challenges, and Security}{5}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Benefits of this Architecture}{5}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Challenges}{5}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Security Discussion}{5}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Repository}{7}{section.4}%

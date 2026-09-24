@@ -1,0 +1,47 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{parskip}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{graphicx}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=black,
+    urlcolor=blue,
+    citecolor=black
+}
+
+\lstdefinestyle{code}{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    columns=fullflexible,
+    backgroundcolor=\color{gray!10}
+}
+\lstset{style=code}
+
+\title{Assignment: Build Something (Poll App: Software Description, Architecture Design, and Discussion)}
+\author{Venkata Naga Sai Yaswanth Deevi \\ \href{vede25@student.bth.se}{vede25@student.bth.se}}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+\newpage
+
+\include{chapters/SoftwareDescription}
+
+\include{chapters/ArchitectureDesign}
+
+\include{chapters/Discussion}
+
+\include{chapters/Repository}
+
+\end{document}

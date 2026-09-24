@@ -1,0 +1,48 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: poll-service
+  labels:
+    app: poll
+spec:
+  type: NodePort
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+      nodePort: 30000
+  selector:
+    app: poll
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poll
+  labels:
+    app: poll
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: poll
+  template:
+    metadata:
+      labels:
+        app: poll
+    spec:
+      containers:
+        - name: poll
+          image: skylwalker1470/poll-app-poll:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 3000
+          env:
+            - name: MONGO_HOST
+              value: mongo-service
+            - name: MONGO_PORT
+              value: "27017"
+            - name: NOTIFICATION_HOST
+              value: notification-service
+            - name: NOTIFICATION_PORT
+              value: "3003"

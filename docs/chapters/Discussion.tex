@@ -1,0 +1,46 @@
+\section{Discussion: Benefits, Challenges, and Security}
+
+\subsection{Benefits of this Architecture}
+
+\begin{itemize}
+    \item \textbf{Independent scaling.} As there is no service which maintains a state associated with a particular request session (there is no socket.io and there are no sticky sessions), any particular service can be independently scaled up and down. This is evident from the fact that the results-service has been scaled from three to five replicas without any code changes or downtime.
+
+    \item \textbf{Independent deployability.} Each individual service has its own unique Dockerfile, and each has its own image on Docker hub. The services can be built, deployed, and pushed independently without affecting other services like poll-service, vote-service, and notification-service.
+
+    \item \textbf{Clear ownership of data.} One service needs to communicate to a specific MongoDB collection at any point of time. This will prevent the common microservices antipattern of having multiple services sharing the same database schema and therefore getting coupled through it despite their individual deployments.
+\end{itemize}
+
+\subsection{Challenges}
+
+\begin{itemize}
+    \item \textbf{Increased operational surface.} Four services and one database translate into four different manifest files, logs and potential failure points. Locating a particular error during development involved analyzing logs of three separate services.
+
+    \item \textbf{Distributed failures are harder to diagnose.} The biggest time waster was an unhandled promise rejection in poll-service which crashed the entire process when MongoDB became inaccessible temporarily. It looked like a problem with Kubernetes networking at first, but only pod crash logs could provide a clue.
+
+    \item \textbf{No transactional guarantees across services.} In case vote-service makes a record of a vote, but a subsequent operation fails, there are no rollback mechanisms provided. This is the tradeoff of the microservice approach which is acknowledged.
+
+    \item \textbf{This application is too small to genuinely need
+        scaling.} One instance of each of these services can handle much larger amounts of traffic than it will generate. Scaling of results-service only makes sense if there is a lot of simultaneous polls or a much heavier computation needed, say counting millions of votes.
+\end{itemize}
+
+\subsection{Security Discussion}
+
+Several security shortcuts were taken deliberately, since hardening was
+not the focus of the assignment.
+
+\begin{description}[leftmargin=0cm,style=nextline]
+    \item[No authentication on any service] Polls and voting can be done by anyone accessing the poll-service or vote-service using any voterId, as voterId is an unchecked string that caller passes. In a production environment, one should implement the authentication via signed tokens issued at login by vote-service.
+
+    \item[No rate limiting] One client can create unlimited polls or votes. Rate limiting should be implemented either in each service or by API Gateway.
+
+    \item[MongoDB has no authentication enabled]  MongoDB works without any credentials and can be accessed by any pod from the cluster. In a production environment, one would have to use keyfile for internal authentication and application user with credentials stored as Kubernetes Secret, as described in course materials.
+
+
+    \item[Services trust each other's responses without verification]
+        Vote-service checks poll-service about the state of a poll and its options, results-service trusts both services. While it seems to be reasonable in a closed network of a cluster, a malicious service could provide fake data to other services.
+
+    \item[MongoDB bound to all interfaces]By default mongod binds to 127.0.0.1, but it was changed to 0.0.0.0 during the development process. Without any authentication, it is okay only due to the closed nature of the cluster's internal network. Making MongoDB service type to be LoadBalancer would make it vulnerable.
+\end{description}
+
+None of these were exploited during this project. They are documented as
+known, accepted gaps for an exercise of this scope.

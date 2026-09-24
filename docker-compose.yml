@@ -1,0 +1,48 @@
+services:
+  poll:
+    build: ./poll-service
+    ports:
+      - "3000:3000"
+    environment:
+      MONGO_HOST: mongo
+      MONGO_PORT: "27017"
+      NOTIFICATION_HOST: notification
+      NOTIFICATION_PORT: "3003"
+
+  vote:
+    build: ./vote-service
+    ports:
+      - "3001:3001"
+    environment:
+      MONGO_HOST: mongo
+      MONGO_PORT: "27017"
+      POLL_HOST: poll
+      POLL_PORT: "3000"
+
+  results:
+    build: ./results-service
+    ports:
+      - "3002:3002"
+    environment:
+      POLL_HOST: poll
+      POLL_PORT: "3000"
+      VOTE_HOST: vote
+      VOTE_PORT: "3001"
+
+  notification:
+    build: ./notification-service
+    ports:
+      - "3003:3003"
+
+  mongo:
+    image: mongo
+    command: --bind_ip 0.0.0.0 --quiet --syslog
+    expose:
+      - "27017"
+    volumes:
+      - mongo-data:/data/db
+      - mongo-config:/data/configdb
+
+volumes:
+  mongo-data:
+  mongo-config:
