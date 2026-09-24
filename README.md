@@ -4,6 +4,8 @@ A microservice based polling and voting application. Create a poll, vote on
 it, see live results, close it. Built to refresh cloud provisioning and
 deployment concepts: Docker, Docker Compose, and Kubernetes.
 
+
+the final report is in docs/delivirables.pdf
 ## Architecture
 
 ```mermaid
