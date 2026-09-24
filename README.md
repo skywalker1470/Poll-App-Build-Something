@@ -5,7 +5,7 @@ it, see live results, close it. Built to refresh cloud provisioning and
 deployment concepts: Docker, Docker Compose, and Kubernetes.
 
 
-the final report is in docs/delivirables.pdf
+the final report is in docs/deliverables.pdf
 ## Architecture
 
 ```mermaid
